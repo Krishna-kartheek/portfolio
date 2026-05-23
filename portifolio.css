@@ -1,0 +1,26 @@
+/* Style for the certificate image container */
+.cert-image-container {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Style for the certificate image itself */
+.cert-image-container img {
+    width: 100%;
+    max-width: 600px; /* Adjust this to change how large it displays on desktops */
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #21262d; /* Subtle dark border matching github/dark themes */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Smooth shadow to make it pop */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover transition */
+}
+
+/* Hover effect to make it interactive */
+.cert-image-container img:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6); /* Deeper shadow on hover */
+    cursor: pointer;
+}
