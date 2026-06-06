@@ -442,6 +442,15 @@
         </div>
     </section>
 
+    <section id="activity">
+        <div class="section-title">> Core_Activity_Stream</div>
+        <div class="about-content">
+            <div class="github-grid-wrapper" style="background: var(--surface); border: 1px solid var(--border); padding: 1.25rem; border-radius: 8px; backdrop-filter: blur(8px); display: flex; justify-content: center; overflow-x: auto;">
+                <img src="https://github-readme-activity-graph.vercel.app/graph?username=Krishna-kartheek&theme=react-dark&bg_color=0B0F19&hide_border=true&area=true" alt="Krishna Kartheek GitHub Activity Grid" class="cursor-target" style="width: 100%; max-width: 850px; height: auto; min-width: 600px; display: block;">
+            </div>
+        </div>
+    </section>
+
     <section id="skills">
         <div class="section-title">> Technical_Expertise</div>
         <div class="skills-grid">
@@ -606,6 +615,7 @@
     <div class="dock-container">
         <nav class="dock">
             <a href="#about" class="active-btn cursor-target">About Me</a>
+            <a href="#activity" class="cursor-target">Activity</a>
             <a href="#skills" class="cursor-target">Skills</a>
             <a href="#projects" class="cursor-target">Projects</a>
             <a href="#certifications" class="cursor-target">Certifications</a>
@@ -685,7 +695,7 @@
                 ring.classList.remove('expand');
                 targetX = null;
                 targetY = null;
-            });
+          2  });
         });
 
         function toggleTheme() {
@@ -766,13 +776,13 @@
                         let y = (canvas.height * 0.35) + line.yOffset + 
                                 Math.sin(x * 0.0015 + line.phase) * 95 + 
                                 Math.cos(x * 0.002 - line.phase) * 35;
-                        
+                      
                         // Slowly slope down diagonally across screen space to mirror the sample aesthetic
                         y += x * 0.25;
 
                         if (x === 0) {
                             ctx.moveTo(x, y);
-                        } else {
+              0          } else {
                             ctx.lineTo(x, y);
                         }
                     }
