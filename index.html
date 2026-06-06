@@ -39,10 +39,21 @@
             max-width: 950px;
             margin: 0 auto;
             transition: background 0.3s, color 0.3s;
-            overflow-x: hidden;
+            position: relative;
         }
         [data-theme="light"] body {
             background: linear-gradient(135deg, #f4f6f9, #e2e8f0, #cbd5e1);
+        }
+
+        /* Ambient Dynamic Background Canvas Layer */
+        #kinetic-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
         }
 
         #spotlight {
@@ -52,6 +63,27 @@
             pointer-events: none;
             z-index: 9999;
             background: radial-gradient(600px circle at var(--x, 0px) var(--y, 0px), var(--glow), transparent 80%);
+        }
+
+        /* Custom Cursor Elements */
+        .custom-cursor-dot {
+            width: 6px; height: 6px; background: #ffffff; position: fixed; border-radius: 50%; z-index: 10000; pointer-events: none; transform: translate(-50%, -50%);
+        }
+        .custom-cursor-ring {
+            width: 32px; height: 32px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+            position: fixed; border-radius: 50%; z-index: 10000; pointer-events: none; transform: translate(-50%, -50%);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
+        }
+        .custom-cursor-ring.expand {
+            width: 55px; height: 55px; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Hide default pointer on desktop only */
+        @media (pointer: fine) {
+            html, body, a, button { cursor: none !important; }
+        }
+        @media (max-width: 768px) {
+            .custom-cursor-dot, .custom-cursor-ring { display: none !important; }
         }
 
         /* Scroll Animation Target */
@@ -82,7 +114,6 @@
             transform: none !important;
         }
 
-        /* Recruiter Trick: Terminal Typing Animation */
         .typing-container {
             display: inline-block;
             border-right: 3px solid var(--accent);
@@ -105,8 +136,7 @@
         .tagline { font-size: 1.1rem; line-height: 1.6; color: var(--muted); font-weight: 500; margin-bottom: 2rem; }
         .tagline span { color: var(--text); font-weight: 700; }
 
-        /* Actions Bar Button Hover Rigging */
-        .action-bar { display: flex; flex-wrap: wrap; gap: 1rem; }
+        .action-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
         .btn {
             font-family: 'JetBrains Mono', monospace;
             display: inline-flex; align-items: center; gap: 0.5rem;
@@ -123,7 +153,6 @@
             box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
         }
         
-        /* Attention-grabber Call to Action for Resume Link */
         .btn-secondary {
             background: var(--surface); color: var(--text); border: 1px solid var(--border);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -187,7 +216,7 @@
         .project-btn-secondary:hover { color: var(--text); border-color: var(--muted); }
 
         .projects-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
-        .project-tag { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--muted); font-size: 0.7 ceramic; padding: 0.25rem 0.6rem; border-radius: 4px; }
+        .project-tag { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); color: var(--muted); font-size: 0.75rem; padding: 0.25rem 0.6rem; border-radius: 4px; }
 
         .validation-card {
             background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
@@ -202,7 +231,6 @@
         .card-content h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
         .card-content p { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; }
         .cert-code { font-size: 0.75rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; }
-        .verify-btn { align-self: flex-start; }
 
         .cert-image-container {
             margin-top: 1.5rem;
@@ -225,17 +253,108 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
 
-        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-        .contact-link {
-            display: flex; align-items: center; gap: 1rem; 
-            background: var(--surface); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border); padding: 1.2rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.85rem; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            min-width: 0; overflow: hidden; word-break: break-all;
+        /* Contact Section Grid Configurations */
+        .status-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border);
+            padding: 0.6rem 1rem; border-radius: 6px; font-size: 0.75rem; margin-bottom: 2rem; color: var(--muted);
         }
-        .contact-link:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 8px 20px var(--glow); }
-        .contact-icon { width: 24px; height: 24px; fill: var(--accent); flex-shrink: 0; }
-        .contact-link span { overflow: hidden; text-overflow: ellipsis; white-space: normal; }
+        .status-indicator { display: flex; align-items: center; gap: 0.5rem; }
+        .ping-dot {
+            width: 8px; height: 8px; background-color: #10b981; border-radius: 50%;
+            display: inline-block; animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .contact-container-layout { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; }
+        @media(max-width: 768px) { .contact-container-layout { grid-template-columns: 1fr; } }
+
+        .terminal-form-container { background: rgba(5, 8, 16, 0.8); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .terminal-header { background: rgba(255, 255, 255, 0.03); border-bottom: 1px solid var(--border); padding: 0.6rem 1rem; display: flex; align-items: center; gap: 1rem; }
+        .terminal-buttons { display: flex; gap: 0.4rem; }
+        .t-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .t-dot.red { background: #ef4444; }
+        .t-dot.yellow { background: #f59e0b; }
+        .t-dot.green { background: #10b981; }
+        .terminal-title { font-size: 0.75rem; color: var(--muted); }
+
+        .terminal-form { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.2rem; }
+        .form-row { display: flex; flex-direction: column; gap: 0.4rem; }
+        .prompt-sign { font-size: 0.8rem; color: var(--accent); font-weight: 700; }
+        .terminal-form input, .terminal-form textarea {
+            background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 4px;
+            padding: 0.6rem 0.8rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text); outline: none;
+        }
+        .terminal-form input:focus, .terminal-form textarea:focus { border-color: var(--accent); background: rgba(59, 130, 246, 0.03); }
+        .terminal-form textarea { min-height: 120px; resize: vertical; }
+
+        /* Kaic-Inspired Circular Media Hub Buttons */
+        .social-links-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .hero-social-row {
+            margin-top: -1rem;
+            margin-bottom: 2rem;
+        }
+        .kaic-icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+        }
+        [data-theme="light"] .kaic-icon-btn {
+            border-color: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.02);
+        }
+        .kaic-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--glow);
+        }
+        .kaic-svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transition: fill 0.3s ease;
+        }
+
+        .contact-links-sidebar { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 1.2rem; 
+            justify-content: center; 
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(8px);
+        }
+        .sidebar-node-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .workspace-footprint { text-align: center; margin-top: 3rem; font-size: 0.85rem; color: var(--muted); }
 
         .dock-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 10000; width: max-content; max-width: 95vw; }
         .dock {
@@ -265,33 +384,21 @@
         .theme-toggle:hover .theme-icon { fill: var(--text); }
 
         /* Animation Keyframe Pools */
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-        @keyframes blink {
-            from, to { border-color: transparent; }
-            50% { border-color: var(--accent); }
-        }
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink { from, to { border-color: transparent; } 50% { border-color: var(--accent); } }
         @keyframes pulse-border {
             0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
             70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
             100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
         }
-
-        @media print {
-            body { background: white !important; color: black !important; padding: 0; max-width: 100%; }
-            section { padding: 2rem 0; opacity: 1 !important; transform: none !important; border-bottom: 1px solid #ccc; }
-            .dock-container, #spotlight, .action-bar, .project-links, .theme-toggle, .project-btn { display: none !important; }
-            .skill-card, .project-card, .validation-card, .contact-link { backdrop-filter: none !important; background: transparent !important; border: 1px solid #aaa !important; transform: none !important; }
-            .section-title { color: black !important; }
-            h1 { text-shadow: none !important; color: black !important; }
-        }
     </style>
 </head>
 <body>
 
+    <canvas id="kinetic-mesh"></canvas>
     <div id="spotlight"></div>
+    <div class="custom-cursor-dot" id="cursor-dot"></div>
+    <div class="custom-cursor-ring" id="cursor-ring"></div>
 
     <section id="hero">
         <div class="typing-container">
@@ -301,9 +408,25 @@
             <span>AI Engineering • Backend Development • Automation</span><br>
             Turning Ideas Into AI-Powered Reality.
         </div>
+        
+        <div class="social-links-row hero-social-row">
+            <a href="mailto:krishnakartheekgoud@gmail.com?cc=krishnakartheektalam@gmail.com&subject=Portfolio%20Inquiry" class="kaic-icon-btn cursor-target" title="Direct Email Handshake">
+                <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://github.com/Krishna-kartheek" target="_blank" class="kaic-icon-btn cursor-target" title="GitHub Engine Repositories">
+                <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.38-1.99 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/krishna-kartheek-talam" target="_blank" class="kaic-icon-btn cursor-target" title="LinkedIn Professional Profile">
+                <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://wa.me/919347547846?text=Hi%20Krishna%20Kartheek,%20I%20saw%20your%20AI%20Engineer%20Portfolio%20and%20want%20to%20connect!" target="_blank" class="kaic-icon-btn cursor-target" title="Secure WhatsApp Handshake Thread">
+                <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.83.001-2.624-1.023-5.092-2.884-6.953C16.583 1.959 14.12 .937 11.498.937c-5.441 0-9.866 4.413-9.87 9.831-.001 1.743.468 3.447 1.359 4.954l-.972 3.551 3.634-.954zm10.974-6.852c-.29-.145-1.721-.85-1.987-.946-.266-.097-.46-.145-.654.145-.193.291-.749.946-.918 1.14-.169.194-.339.219-.63.073-.29-.145-1.226-.452-2.336-1.442-.864-.771-1.447-1.723-1.616-2.014-.169-.29-.018-.447.127-.591.131-.13.29-.339.436-.509.145-.17.194-.291.291-.485.097-.194.048-.364-.024-.509-.073-.145-.654-1.577-.896-2.159-.236-.569-.475-.492-.654-.501-.169-.008-.364-.01-.559-.01s-.51.073-.777.364c-.266.291-1.02 1.019-1.02 2.484 0 1.465 1.069 2.881 1.214 3.075.145.194 2.102 3.21 5.093 4.507.712.31 1.267.494 1.701.633.715.227 1.365.195 1.88.117.574-.087 1.721-.703 1.963-1.383.242-.68.242-1.263.169-1.383-.073-.12-.266-.194-.559-.34z"/></svg>
+            </a>
+        </div>
+
         <div class="action-bar">
-            <a href="#projects" class="btn btn-primary">Explore Engineered Systems</a>
-            <a href="TALAM_KRISHNA_KARTHEEK__Resume.pdf" download="TALAM_KRISHNA_KARTHEEK__Resume.pdf" class="btn btn-secondary" title="Download Resume Document">
+            <a href="#projects" class="btn btn-primary cursor-target">Explore Engineered Systems</a>
+            <a href="TALAM_KRISHNA_KARTHEEK__Resume.pdf" download="TALAM_KRISHNA_KARTHEEK__Resume.pdf" class="btn btn-secondary cursor-target" title="Download Resume Document">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                 Download Resume
             </a>
@@ -351,50 +474,51 @@
             <div class="project-card">
                 <div class="project-info">
                     <div class="project-header">
-                        <div class="project-title">AI Support Automation Platform</div>
+                        <div class="project-title">AI Mock Interview Platform</div>
                     </div>
                     <div class="projects-tags">
-                        <span class="project-tag">Python</span><span class="project-tag">FastAPI/Flask</span><span class="project-tag">OpenAI API</span><span class="project-tag">MySQL</span><span class="project-tag">Redis</span>
+                        <span class="project-tag">Next.js 14</span><span class="project-tag">TypeScript</span><span class="project-tag">Gemini API</span><span class="project-tag">Supabase</span><span class="project-tag">WebRTC</span>
                     </div>
-                    <div class="project-desc">Asynchronous orchestration instance handling streaming data vectorization structures and complex custom pipeline parameters to manage platform workloads.</div>
+                    <div class="project-desc">Asynchronous simulation instance handling real-time WebRTC media streams, LLM structured json generation pipelines, and complex contextual evaluation metrics to manage enterprise interview workloads.</div>
                     <div class="project-features">
                         <div class="project-features-title">Core Architecture Features</div>
                         <ul class="project-features-list">
-                            <li>AI Chatbot Engine</li>
-                            <li>Ticket Classification</li>
-                            <li>Auto-Reply Generation</li>
-                            <li>Admin Dashboard</li>
-                            <li>Email Automation</li>
+                            <li>AI Interviewer Engine</li>
+                            <li>Voice-to-Text Pipeline</li>
+                            <li>Adaptive Follow-Ups</li>
+                            <li>Real-time Code Editor</li>
+                            <li>Structured Analytics Scorecard</li>
                         </ul>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/Krishna-kartheek" target="_blank" class="project-btn project-btn-primary">GitHub Repo</a>
-                        <a href="#" class="project-btn project-btn-secondary">Live Demo</a>
+                        <a href="https://github.com/Krishna-kartheek/UPTRAIL" target="_blank" class="project-btn project-btn-primary cursor-target">GitHub Repo</a>
+                        <a href="https://uptrail-x4i4-731b22xlx-krishnakartheekgoud-2934s-projects.vercel.app/" target="_blank" class="project-btn project-btn-secondary cursor-target">Live Demo</a>
                     </div>
                 </div>
             </div>
+            
             <div class="project-card">
                 <div class="project-info">
                     <div class="project-header">
-                        <div class="project-title">AI Resume Analyzer + ATS Scorer</div>
+                        <div class="project-title">YieldCraft</div>
                     </div>
                     <div class="projects-tags">
-                        <span class="project-tag">Python</span><span class="project-tag">Flask</span><span class="project-tag">LLM Orchestration</span><span class="project-tag">MySQL</span>
+                        <span class="project-tag">Python</span><span class="project-tag">FastAPI</span><span class="project-tag">JavaScript</span><span class="project-tag">HTML5/CSS3</span><span class="project-tag">REST API</span>
                     </div>
-                    <div class="project-desc">Intelligent parser pipeline constructed to ingest unstructured resume structures and evaluate alignment parameters against target data indexes.</div>
+                    <div class="project-desc">Asynchronous simulation instance handling real-time financial mathematics, strict JSON schema validation, and dynamic client-side DOM updates to manage high-precision investment metrics.</div>
                     <div class="project-features">
                         <div class="project-features-title">Core Architecture Features</div>
                         <ul class="project-features-list">
-                            <li>Upload Processing</li>
-                            <li>ATS Scoring Engine</li>
-                            <li>Keyword Detection</li>
-                            <li>AI Suggestions</li>
-                            <li>JD Matrix Matching</li>
+                            <li>Yield Computation Engine</li>
+                            <li>Asynchronous API Routing</li>
+                            <li>Dynamic UI Re-rendering</li>
+                            <li>Input Schema Guardrails</li>
+                            <li>Mathematical Modeling</li>
                         </ul>
                     </div>
                     <div class="project-links">
-                        <a href="https://github.com/Krishna-kartheek" target="_blank" class="project-btn project-btn-primary">GitHub Repo</a>
-                        <a href="#" class="project-btn project-btn-secondary">Live Demo</a>
+                        <a href="https://github.com/Krishna-kartheek/YieldCraft" target="_blank" class="project-btn project-btn-primary cursor-target">GitHub Repo</a>
+                        <a href="https://krishna-kartheek.github.io/YieldCraft/" target="_blank" class="project-btn project-btn-secondary cursor-target">Live Demo</a>
                     </div>
                 </div>
             </div>
@@ -404,17 +528,15 @@
     <section id="certifications">
         <div class="validation-section">
             <div class="section-title">> Industry_Validations</div>
-            
             <div class="validation-card">
                 <div class="card-content">
                     <h3>Python for Beginners</h3>
                     <p>Issued via Simplilearn Skillup • Online Course Verification</p>
                     <span class="cert-code">Certificate Code: 9570454</span>
                 </div>
-                <a href="https://www.simplilearn.com" target="_blank" class="btn btn-secondary verify-btn" style="padding: 0.5rem 1rem; font-size: 0.75rem;">Verify Credential</a>
-                
+                <a href="https://www.simplilearn.com" target="_blank" class="btn btn-secondary verify-btn cursor-target" style="padding: 0.5rem 1rem; font-size: 0.75rem; align-self: flex-start;">Verify Credential</a>
                 <div class="cert-image-container">
-                    <img src="Screenshot 2026-05-24 030325.png" alt="Simplilearn Python for Beginners Certificate">
+                    <img src="Screenshot 2026-05-24 030325.png" alt="Simplilearn Python for Beginners Certificate" class="cursor-target">
                 </div>
             </div>
         </div>
@@ -422,33 +544,73 @@
 
     <section id="contact">
         <div class="section-title">> Establish_Handshake</div>
-        <div class="contact-grid">
-            <a href="mailto:krishnakartheekgoud@gmail.com?subject=Portfolio%20Inquiry" class="contact-link" title="Send Email Direct">
-                <svg class="contact-icon" viewBox="0 0 24 24">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                </svg>
-                <span>krishnakartheekgoud@gmail.com</span>
-            </a>
-            <a href="https://www.linkedin.com/in/krishna-kartheek-talam" target="_blank" class="contact-link">
-                <svg class="contact-icon" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-                <span>LinkedIn Profile</span>
-            </a>
-            <a href="https://github.com/Krishna-kartheek" target="_blank" class="contact-link">
-                <svg class="contact-icon" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.38-1.99 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-                <span>GitHub Engine</span>
-            </a>
+        <div class="status-bar">
+            <div class="status-indicator"><span class="ping-dot"></span><span>SYSTEM STATUS: ACTIVE // OPEN TO OPPORTUNITIES</span></div>
+            <div>TARGET ID: +91 93475 47846</div>
         </div>
-        <p class="project-desc" style="text-align: center; margin-top: 3rem;">Mapped Workspace: Amalapuram, Andhra Pradesh, India</p>
+        
+        <div class="contact-container-layout">
+            <div class="terminal-form-container">
+                <div class="terminal-header">
+                    <div class="terminal-buttons"><span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span></div>
+                    <span class="terminal-title">guest@talam-ai:~# send-multi-channel.io</span>
+                </div>
+                
+                <form class="terminal-form" action="https://formsubmit.co/krishnakartheekgoud@gmail.com" method="POST">
+                    <input type="hidden" name="_cc" value="krishnakartheektalam@gmail.com">
+                    <input type="hidden" name="_subject" value="New Engineering Portfolio Handshake">
+                    <input type="hidden" name="_template" value="table">
+
+                    <div class="form-row">
+                        <span class="prompt-sign">talam-ai$ --sender-identifier :</span>
+                        <input type="text" name="name" required placeholder="Name or Organization" autocomplete="off">
+                    </div>
+                    <div class="form-row">
+                        <span class="prompt-sign">talam-ai$ --reply-route :</span>
+                        <input type="email" name="email" required placeholder="your.email@domain.com" autocomplete="off">
+                    </div>
+                    <div class="form-row message-row">
+                        <span class="prompt-sign">talam-ai$ --payload :</span>
+                        <textarea name="message" required placeholder="Type system feedback, project parameters or architectural requirements here..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-submit cursor-target">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                            Execute Handshake (Email Mails)
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="contact-links-sidebar">
+                <div class="sidebar-node-title">Connect Node Channels</div>
+                <div class="social-links-row">
+                    <a href="mailto:krishnakartheekgoud@gmail.com?cc=krishnakartheektalam@gmail.com&subject=Portfolio%20Inquiry" class="kaic-icon-btn cursor-target" title="Direct Email Handshake">
+                        <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    </a>
+                    <a href="https://github.com/Krishna-kartheek" target="_blank" class="kaic-icon-btn cursor-target" title="GitHub Engine Repositories">
+                        <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.38-1.99 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/krishna-kartheek-talam" target="_blank" class="kaic-icon-btn cursor-target" title="LinkedIn Professional Profile">
+                        <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                    </a>
+                    <a href="https://wa.me/919347547846?text=Hi%20Krishna%20Kartheek,%20I%20saw%20your%20AI%20Engineer%20Portfolio%20and%20want%20to%20connect!" target="_blank" class="kaic-icon-btn cursor-target" title="Secure WhatsApp Handshake Thread">
+                        <svg class="kaic-svg" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.413 9.863-9.83.001-2.624-1.023-5.092-2.884-6.953C16.583 1.959 14.12 .937 11.498.937c-5.441 0-9.866 4.413-9.87 9.831-.001 1.743.468 3.447 1.359 4.954l-.972 3.551 3.634-.954zm10.974-6.852c-.29-.145-1.721-.85-1.987-.946-.266-.097-.46-.145-.654.145-.193.291-.749.946-.918 1.14-.169.194-.339.219-.63.073-.29-.145-1.226-.452-2.336-1.442-.864-.771-1.447-1.723-1.616-2.014-.169-.29-.018-.447.127-.591.131-.13.29-.339.436-.509.145-.17.194-.291.291-.485.097-.194.048-.364-.024-.509-.073-.145-.654-1.577-.896-2.159-.236-.569-.475-.492-.654-.501-.169-.008-.364-.01-.559-.01s-.51.073-.777.364c-.266.291-1.02 1.019-1.02 2.484 0 1.465 1.069 2.881 1.214 3.075.145.194 2.102 3.21 5.093 4.507.712.31 1.267.494 1.701.633.715.227 1.365.195 1.88.117.574-.087 1.721-.703 1.963-1.383.242-.68.242-1.263.169-1.383-.073-.12-.266-.194-.559-.34z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <p class="workspace-footprint" style="text-align: center; margin-top: 3rem;">Mapped Workspace: Amalapuram, Andhra Pradesh, India</p>
     </section>
 
     <div class="dock-container">
         <nav class="dock">
-            <a href="#about" class="active-btn">About Me</a>
-            <a href="#skills">Skills</a>
-            <a href="#projects">Projects</a>
-            <a href="#certifications">Certifications</a>
-            <a href="#contact">Contact</a>
-            <button class="theme-toggle" onclick="toggleTheme()">
+            <a href="#about" class="active-btn cursor-target">About Me</a>
+            <a href="#skills" class="cursor-target">Skills</a>
+            <a href="#projects" class="cursor-target">Projects</a>
+            <a href="#certifications" class="cursor-target">Certifications</a>
+            <a href="#contact" class="cursor-target">Contact</a>
+            <button class="theme-toggle cursor-target" onclick="toggleTheme()">
                 <svg class="theme-icon" viewBox="0 0 24 24">
                     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-2V4a8 8 0 1 1 0 16z"/>
                 </svg>
@@ -457,10 +619,73 @@
     </div>
 
     <script>
+        // Spotlight tracer coordinates configuration
         const spotlight = document.getElementById('spotlight');
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        
+        let mouseX = 0, mouseY = 0;
+        let ringX = 0, ringY = 0;
+        let isHovering = false;
+        let targetX = null, targetY = null;
+
         window.addEventListener('mousemove', (e) => {
-            spotlight.style.setProperty('--x', e.clientX + 'px');
-            spotlight.style.setProperty('--y', e.clientY + 'px');
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (spotlight) {
+                spotlight.style.setProperty('--x', mouseX + 'px');
+                spotlight.style.setProperty('--y', mouseY + 'px');
+            }
+            if (dot) {
+                dot.style.left = mouseX + 'px';
+                dot.style.top = mouseY + 'px';
+            }
+        });
+
+        // Loop handles the 0.08s lag/damping look beautifully
+        function animateCursorLoop() {
+            if (isHovering && targetX !== null && targetY !== null) {
+                ringX += (targetX - ringX) * 0.25;
+                ringY += (targetY - ringY) * 0.25;
+            } else {
+                ringX += (mouseX - ringX) * 0.14;
+                ringY += (mouseY - ringY) * 0.14;
+            }
+            
+            if (ring) {
+                ring.style.left = ringX + 'px';
+                ring.style.top = ringY + 'px';
+            }
+            requestAnimationFrame(animateCursorLoop);
+        }
+        animateCursorLoop();
+
+        // Magnetic element link targets setup
+        const clickables = document.querySelectorAll('.cursor-target');
+        clickables.forEach(elem => {
+            elem.addEventListener('mouseenter', () => {
+                isHovering = true;
+                ring.classList.add('expand');
+                
+                const rect = elem.getBoundingClientRect();
+                targetX = rect.left + rect.width / 2;
+                targetY = rect.top + rect.height / 2;
+            });
+            elem.addEventListener('mousemove', () => {
+                const rect = elem.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                // Add micro-spring offset pull
+                targetX = centerX + (mouseX - centerX) * 0.3;
+                targetY = centerY + (mouseY - centerY) * 0.3;
+            });
+            elem.addEventListener('mouseleave', () => {
+                isHovering = false;
+                ring.classList.remove('expand');
+                targetX = null;
+                targetY = null;
+            });
         });
 
         function toggleTheme() {
@@ -470,7 +695,7 @@
             localStorage.setItem('theme', targetTheme);
         }
 
-        // Performance optimized Intersection Observer for recruiter scroll animations
+        // Intersection Observer processing for scrolling cards animations
         const sections = document.querySelectorAll('section');
         const navButtons = document.querySelectorAll('.dock a');
 
@@ -497,6 +722,67 @@
                 if (btn.getAttribute('href').slice(1) === current) { btn.classList.add('active-btn'); }
             });
         });
+
+        /* ==========================================================================
+           KAIC-INSPIRED KINETIC GEOMETRIC LINE WAVE BACKGROUND SYSTEM
+           ========================================================================== */
+        const canvas = document.getElementById('kinetic-mesh');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let lines = [];
+            const numLines = 32; // Number of parallel lines creating the abstract wave strip
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // Set up line array offsets
+            for (let i = 0; i < numLines; i++) {
+                lines.push({
+                    yOffset: i * 18,
+                    speed: 0.001 + (i * 0.0001),
+                    phase: i * 0.12
+                });
+            }
+
+            function drawKineticMesh(time) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Set color to a delicate highlight accent blue matching your layout variables
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                ctx.strokeStyle = currentTheme === 'light' ? 'rgba(37, 99, 235, 0.08)' : 'rgba(59, 130, 246, 0.14)';
+                ctx.lineWidth = 1.2;
+
+                // Render lines propagating from left to right along the diagonal
+                lines.forEach(line => {
+                    ctx.beginPath();
+                    line.phase += line.speed;
+                    
+                    for (let x = 0; x < canvas.width; x += 15) {
+                        // Complex sine-cosine interpolation wave simulation
+                        let y = (canvas.height * 0.35) + line.yOffset + 
+                                Math.sin(x * 0.0015 + line.phase) * 95 + 
+                                Math.cos(x * 0.002 - line.phase) * 35;
+                        
+                        // Slowly slope down diagonally across screen space to mirror the sample aesthetic
+                        y += x * 0.25;
+
+                        if (x === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.stroke();
+                });
+
+                requestAnimationFrame(drawKineticMesh);
+            }
+            requestAnimationFrame(drawKineticMesh);
+        }
     </script>
 </body>
 </html>
